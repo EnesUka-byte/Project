@@ -393,79 +393,124 @@
 
   <div id="resultBox"></div>
 
-  <script>
-    // Track user answers: index => 0 or 1, or null if unanswered
-    const userAnswers = new Array(10).fill(null);
+<script>
+  // Track user answers: index => 0 or 1, or null if unanswered
+  const userAnswers = new Array(10).fill(null);
 
-    const finishBtn = document.getElementById('finishBtn');
-    const resultBox = document.getElementById('resultBox');
-    const scoreText = document.getElementById('profile-text-top');
-    const scoreEmoji = document.getElementById('profile-emoji-top');
+  const finishBtn = document.getElementById('finishBtn');
+  const resultBox = document.getElementById('resultBox');
+  const scoreText = document.getElementById('profile-text-top');
+  const scoreEmoji = document.getElementById('profile-emoji-top');
 
-    // Update finish button enable state based on how many questions answered
-    function updateFinishButton() {
-      const allAnswered = userAnswers.every(ans => ans !== null);
-      finishBtn.disabled = !allAnswered;
-      finishBtn.classList.toggle('enabled', allAnswered);
-    }
+  // Update finish button enable state based on how many questions answered
+  function updateFinishButton() {
+    const allAnswered = userAnswers.every(ans => ans !== null);
+    finishBtn.disabled = !allAnswered;
+    finishBtn.classList.toggle('enabled', allAnswered);
+  }
 
-    // Update score display in profile top
-    function updateScoreDisplay(score, total) {
-      scoreText.textContent = `Your Score: ${score}/${total}`;
-      // Simple emoji feedback
-      let emoji = "🌿"; // default
-      if (score === total) emoji = "🏆";
-      else if (score >= total * 0.8) emoji = "👍";
-      else if (score >= total * 0.5) emoji = "🙂";
-      else emoji = "😞";
-      scoreEmoji.textContent = emoji;
-    }
+  // Update score display in profile top
+  function updateScoreDisplay(score, total) {
+    scoreText.textContent = `Your Score: ${score}/${total}`;
+    // Simple emoji feedback
+    let emoji = "🌿"; // default
+    if (score === total) emoji = "🏆";
+    else if (score >= total * 0.8) emoji = "👍";
+    else if (score >= total * 0.5) emoji = "🙂";
+    else emoji = "😞";
+    scoreEmoji.textContent = emoji;
+  }
 
-    // Handler when user clicks a choice button
-    function onChoiceClick(event) {
-      const btn = event.currentTarget;
-      const questionBlock = btn.closest('.question-block');
-      const qIndex = Number(questionBlock.dataset.index);
-      const value = Number(btn.dataset.value);
+  // Handler when user clicks a choice button
+  function onChoiceClick(event) {
+    const btn = event.currentTarget;
+    const questionBlock = btn.closest('.question-block');
+    const qIndex = Number(questionBlock.dataset.index);
+    const value = Number(btn.dataset.value);
 
-      // Save answer
-      userAnswers[qIndex] = value;
+    // Save answer
+    userAnswers[qIndex] = value;
 
-      // Highlight selected button, remove others
-      const buttons = questionBlock.querySelectorAll('.choice-button');
-      buttons.forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
+    // Highlight selected button, remove others
+    const buttons = questionBlock.querySelectorAll('.choice-button');
+    buttons.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
 
+    updateFinishButton();
+  }
+
+  // Attach listeners to all choice buttons
+  document.querySelectorAll('.choice-button').forEach(button => {
+    button.addEventListener('click', onChoiceClick);
+  });
+
+  // Finish button click: calculate score & show result
+  finishBtn.addEventListener('click', () => {
+    const total = userAnswers.length;
+    const score = userAnswers.reduce((sum, val) => sum + (val || 0), 0);
+
+    // Save score and answers to localStorage
+    localStorage.setItem('greenReminderScore', score);
+    localStorage.setItem('greenReminderTotal', total);
+    localStorage.setItem('greenReminderAnswers', JSON.stringify(userAnswers));
+
+    updateScoreDisplay(score, total);
+
+    resultBox.style.display = 'block';
+    resultBox.textContent = `You scored ${score} out of ${total}. ${
+      score === total ? 'Perfect score! 🌟' :
+      score >= total * 0.8 ? 'Great job! 👍' :
+      score >= total * 0.5 ? 'Good effort! 🙂' : 'Keep trying! 🌱'
+    }`;
+
+    resultBox.scrollIntoView({ behavior: "smooth" });
+  });
+
+  // Initially update finish button
+  updateFinishButton();
+
+  // Load saved data from localStorage on page load
+  window.addEventListener('load', () => {
+    const savedScore = localStorage.getItem('greenReminderScore');
+    const savedTotal = localStorage.getItem('greenReminderTotal');
+    const savedAnswers = localStorage.getItem('greenReminderAnswers');
+
+    if (savedAnswers) {
+      const answers = JSON.parse(savedAnswers);
+      for (let i = 0; i < answers.length; i++) {
+        const val = answers[i];
+        if (val !== null) {
+          userAnswers[i] = val;
+          // Mark the selected button for each question
+          const questionBlock = document.querySelector(`.question-block[data-index="${i}"]`);
+          if (questionBlock) {
+            const buttons = questionBlock.querySelectorAll('.choice-button');
+            buttons.forEach(btn => {
+              if (Number(btn.dataset.value) === val) {
+                btn.classList.add('selected');
+              }
+            });
+          }
+        }
+      }
       updateFinishButton();
     }
 
-    // Attach listeners to all choice buttons
-    document.querySelectorAll('.choice-button').forEach(button => {
-      button.addEventListener('click', onChoiceClick);
-    });
+    if (savedScore !== null && savedTotal !== null) {
+      const score = Number(savedScore);
+      const total = Number(savedTotal);
+      updateScoreDisplay(score, total);
+      // Show result box as it was after finishing test
+      resultBox.style.display = 'block';
+      resultBox.textContent = `You scored ${score} out of ${total}. ${
+        score === total ? 'Perfect score! 🌟' :
+        score >= total * 0.8 ? 'Great job! 👍' :
+        score >= total * 0.5 ? 'Good effort! 🙂' : 'Keep trying! 🌱'
+      }`;
+    }
+  });
+</script>
 
-    // Finish button click: calculate score & show result
-    finishBtn.addEventListener('click', () => {
-  const total = userAnswers.length;
-  const score = userAnswers.reduce((sum, val) => sum + (val || 0), 0);
-
-  // Save score and answers to localStorage
-  localStorage.setItem('greenReminderScore', score);
-  localStorage.setItem('greenReminderTotal', total);
-  localStorage.setItem('greenReminderAnswers', JSON.stringify(userAnswers));
-
-  updateScoreDisplay(score, total);
-
-  resultBox.style.display = 'block';
-  resultBox.textContent = `You scored ${score} out of ${total}. ${score === total ? 'Perfect score! 🌟' : score >= total*0.8 ? 'Great job! 👍' : score >= total*0.5 ? 'Good effort! 🙂' : 'Keep trying! 🌱'}`;
-
-  resultBox.scrollIntoView({behavior: "smooth"});
-});
-
-
-    // Initially update finish button
-    updateFinishButton();
-  </script>
 
 </body>
 </html>
