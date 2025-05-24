@@ -507,9 +507,14 @@
         score >= total * 0.8 ? 'Great job! 👍' :
         score >= total * 0.5 ? 'Good effort! 🙂' : 'Keep trying! 🌱'
       }`;
+    } else {
+      // No saved data: show default score 0/10 and emoji 🌿
+      updateScoreDisplay(0, userAnswers.length);
+      resultBox.style.display = 'none'; // hide result box initially
     }
   });
 </script>
+
 
 
 </body>
