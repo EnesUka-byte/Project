@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreenReminder-Test</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #ddffaa;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpolygon fill='%23AE9' fill-opacity='0.57' points='120 120 60 120 90 90 120 60 120 0 120 0 60 60 0 0 0 60 30 90 60 120 120 120 '/%3E%3C/svg%3E");
+      font-family: Arial, sans-serif;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    h1.title {
+      font-size: 80px;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      text-align: center;
+      margin: 50px 0 40px 0;
+      padding: 20px 40px;
+      background: rgba(0, 80, 0, 0.7);
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 100, 0, 0.7);
+      user-select: none;
+    }
+
+    #profile-top {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 100, 0, 0.85);
+      border-radius: 12px;
+      padding: 12px 25px;
+      box-shadow: 0 6px 20px rgba(0, 80, 0, 0.7);
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+      color: #d4f4d4;
+      z-index: 1000;
+      min-width: 250px;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    #profile-square {
+      position: fixed;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      width: 70px;
+      height: 70px;
+      background: rgba(0, 80, 0, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 80, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.8rem;
+      user-select: none;
+      cursor: default;
+      color: #d4f4d4;
+      font-weight: 700;
+      z-index: 1000;
+    }
+    #profile-square span {
+      font-size: 1.1rem;
+      margin-top: 6px;
+      font-weight: 500;
+      color: #a6dba6;
+    }
+
+    .question-block {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 30px 40px 40px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      margin-bottom: 60px;
+      text-align: center;
+      position: relative;
+      color: white;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+      /* Show questions by default */
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      transition: none !important;
+    }
+
+    .image-placeholder {
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2);
+      position: relative;
+      background: rgba(255 255 255 / 0.1);
+    }
+
+    .image-placeholder img {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .question-text {
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .choice-button {
+      cursor: pointer;
+      padding: 14px 48px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 30px;
+      border: none;
+      color: white;
+      background: linear-gradient(90deg, #4caf50 0%, #81c784 100%);
+      box-shadow: 0 5px 15px rgba(72, 180, 97, 0.6);
+      transition: background-color 0.4s ease, color 0.4s ease;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .choice-button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #81c784, #4caf50);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      z-index: 0;
+      border-radius: 30px;
+    }
+
+    .choice-button:hover {
+      background: linear-gradient(90deg, #81c784 0%, #4caf50 100%);
+      color: #004d00;
+      box-shadow: 0 6px 18px rgba(34, 100, 34, 0.8);
+    }
+
+    .choice-button.selected {
+      background: #1e7e34 !important;
+      box-shadow: 0 6px 18px rgba(30, 126, 52, 0.9);
+      color: #d0f0c0 !important;
+    }
+
+    .choice-button > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    #backBtn {
+      padding: 18px 50px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      color: white;
+      background: #2e7d32;
+      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.7);
+      transition: background-color 0.3s ease;
+      margin-bottom: 60px;
+      user-select: none;
+    }
+    #backBtn:hover {
+      background-color: #4caf50;
+    }
+
+    #finishBtn {
+      padding: 18px 50px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 30px;
+      border: none;
+      cursor: not-allowed;
+      color: #ddd;
+      background: #999;
+      box-shadow: none;
+      margin-bottom: 60px;
+      user-select: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #finishBtn.enabled {
+      cursor: pointer;
+      color: white;
+      background: #2e7d32;
+      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.7);
+    }
+    #finishBtn.enabled:hover {
+      background-color: #4caf50;
+    }
+
+    #resultBox {
+      max-width: 600px;
+      background: rgba(0,0,0,0.7);
+      color: #d4f4d4;
+      font-size: 1.3rem;
+      text-align: center;
+      padding: 25px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+      margin-bottom: 40px;
+      user-select: none;
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      h1.title {
+        font-size: 50px;
+        padding: 15px 25px;
+      }
+      .question-block {
+        padding: 20px 25px 30px 25px;
+      }
+      .question-text {
+        font-size: 1.1rem;
+      }
+      .choice-button {
+        padding: 12px 36px;
+        font-size: 1rem;
+      }
+      .buttons {
+        gap: 20px;
+      }
+      #backBtn, #finishBtn {
+        width: 100%;
+        padding: 16px 0;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Profile at top center -->
+  <div id="profile-top">
+    <span id="profile-emoji-top">🌿</span>
+    <span id="profile-text-top">Your Score: 0/10</span>
+  </div>
+
+  <h1 class="title">GreenReminder-Test</h1>
+
+  <a href="index.html">
+    <button id="backBtn">Back</button>
+  </a>
+
+  <!-- Questions -->
+  <section class="question-block" data-index="0">
+    <div class="image-placeholder">
+      <img src="10.png" alt="Related visual" />
+    </div>
+    <div class="question-text">1. Did you plant or water any plants today?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="1">
+    <div class="image-placeholder">
+      <img src="9.png" alt="Related visual" />
+    </div>
+    <div class="question-text">2. Did you remove trash you found?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="2">
+    <div class="image-placeholder">
+      <img src="18.png" alt="Related visual" />
+    </div>
+    <div class="question-text">3. Did you reuse or recycle something instead of throwing it away?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="3">
+    <div class="image-placeholder">
+      <img src="19.png" alt="Related visual" />
+    </div>
+    <div class="question-text">4. Did you manage to avoid littering today?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="4">
+    <div class="image-placeholder">
+      <img src="17.png" alt="Related visual" />
+    </div>
+    <div class="question-text">5. Did you ride a bike or use public transport instead of your car?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="5">
+    <div class="image-placeholder">
+      <img src="21.png" alt="Related visual" />
+    </div>
+    <div class="question-text">6. Did you avoid wasting water today?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="6">
+    <div class="image-placeholder">
+      <img src="20.png" alt="Related visual" />
+    </div>
+    <div class="question-text">7. Did you save energy by turning off lights/appliances?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="7">
+    <div class="image-placeholder">
+      <img src="21.png" alt="Related visual" />
+    </div>
+    <div class="question-text">8. Did you pick up someone else’s trash or help clean your neighborhood?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="8">
+    <div class="image-placeholder">
+      <img src="23.png" alt="Related visual" />
+    </div>
+    <div class="question-text">9. Did you avoid buying new plastic or single-use items today?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  <section class="question-block" data-index="9">
+    <div class="image-placeholder">
+      <img src="22.png" alt="Related visual" />
+    </div>
+    <div class="question-text">10. Did you educate someone about being environmentally friendly?</div>
+    <div class="buttons">
+      <button class="choice-button" data-value="1">Yes</button>
+      <button class="choice-button" data-value="0">No</button>
+    </div>
+  </section>
+
+  
+
+  
+
+  <button id="finishBtn" disabled>Finish</button>
+
+  <div id="resultBox"></div>
+
+  <script>
+    // Track user answers: index => 0 or 1, or null if unanswered
+    const userAnswers = new Array(10).fill(null);
+
+    const finishBtn = document.getElementById('finishBtn');
+    const resultBox = document.getElementById('resultBox');
+    const scoreText = document.getElementById('profile-text-top');
+    const scoreEmoji = document.getElementById('profile-emoji-top');
+
+    // Update finish button enable state based on how many questions answered
+    function updateFinishButton() {
+      const allAnswered = userAnswers.every(ans => ans !== null);
+      finishBtn.disabled = !allAnswered;
+      finishBtn.classList.toggle('enabled', allAnswered);
+    }
+
+    // Update score display in profile top
+    function updateScoreDisplay(score, total) {
+      scoreText.textContent = `Your Score: ${score}/${total}`;
+      // Simple emoji feedback
+      let emoji = "🌿"; // default
+      if (score === total) emoji = "🏆";
+      else if (score >= total * 0.8) emoji = "👍";
+      else if (score >= total * 0.5) emoji = "🙂";
+      else emoji = "😞";
+      scoreEmoji.textContent = emoji;
+    }
+
+    // Handler when user clicks a choice button
+    function onChoiceClick(event) {
+      const btn = event.currentTarget;
+      const questionBlock = btn.closest('.question-block');
+      const qIndex = Number(questionBlock.dataset.index);
+      const value = Number(btn.dataset.value);
+
+      // Save answer
+      userAnswers[qIndex] = value;
+
+      // Highlight selected button, remove others
+      const buttons = questionBlock.querySelectorAll('.choice-button');
+      buttons.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+
+      updateFinishButton();
+    }
+
+    // Attach listeners to all choice buttons
+    document.querySelectorAll('.choice-button').forEach(button => {
+      button.addEventListener('click', onChoiceClick);
+    });
+
+    // Finish button click: calculate score & show result
+    finishBtn.addEventListener('click', () => {
+  const total = userAnswers.length;
+  const score = userAnswers.reduce((sum, val) => sum + (val || 0), 0);
+
+  // Save score and answers to localStorage
+  localStorage.setItem('greenReminderScore', score);
+  localStorage.setItem('greenReminderTotal', total);
+  localStorage.setItem('greenReminderAnswers', JSON.stringify(userAnswers));
+
+  updateScoreDisplay(score, total);
+
+  resultBox.style.display = 'block';
+  resultBox.textContent = `You scored ${score} out of ${total}. ${score === total ? 'Perfect score! 🌟' : score >= total*0.8 ? 'Great job! 👍' : score >= total*0.5 ? 'Good effort! 🙂' : 'Keep trying! 🌱'}`;
+
+  resultBox.scrollIntoView({behavior: "smooth"});
+});
+
+
+    // Initially update finish button
+    updateFinishButton();
+  </script>
+
+</body>
+</html>

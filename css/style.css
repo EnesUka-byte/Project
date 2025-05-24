@@ -1,0 +1,257 @@
+.nav {
+    
+    background-color: limegreen;
+    border-radius:100px;
+    
+}
+
+
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #00bb77;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='82' height='82' viewBox='0 0 120 120'%3E%3Cpolygon fill='%23000' fill-opacity='0.02' points='120 0 120 60 90 30 60 0 0 0 0 0 60 60 0 120 60 120 90 90 120 60 120 0'/%3E%3C/svg%3E");
+}
+
+.side-by-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 40px 60px; /* add horizontal padding */
+  background-color: #0b3d0b;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  width: 100vw;       /* full viewport width */
+  height: 100vh;      /* full viewport height */
+  box-sizing: border-box;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* entire image fits inside the frame */
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+  background-color: #0b3d0b; /* fallback background for letterboxing */
+}
+
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+}
+
+.text-container {
+  flex: 1;
+  max-width: 50vw;     /* max half the viewport width */
+}
+
+
+.text-container {
+  flex: 1;
+  max-width: 600px;
+}
+
+.text-container h1 {
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.text-container p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #c8e6c9;
+}
+
+.menu {
+  display: flex;
+  gap: 20px;
+}
+
+.menu a {
+  padding: 12px 28px;
+  background-color: limegreen;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(50, 205, 50, 0.5);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu a:hover {
+  background-color: #4caf50;
+  color: #e0f2e9;
+  cursor: pointer;
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .side-by-side {
+    flex-direction: column;
+    padding: 40px 10px;
+    height: auto; /* Let height adjust for smaller screens */
+  }
+  .image-container, .text-container {
+    max-width: 100%;
+    height: auto;
+  }
+  .image-container img {
+    height: auto;
+  }
+  .text-container h1 {
+    font-size: 2rem;
+  }
+}
+
+
+.Ad{
+    color:black;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    margin-top:20px;
+    border-radius: 20px;
+    width:1200px;
+    height:auto;
+    border:5px solid black;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:white;
+    transition: transform 0.3s ease;
+    
+
+}
+
+
+.Ad:hover {
+        transform: scale(1.05);
+    }
+
+
+.Ad p {
+    margin-right:50px;
+}
+
+/* Container background & layout */
+.Motivation {
+    margin-top:100px;
+  background: linear-gradient(135deg, #4caf50, #81c784); /* vibrant green gradient */
+  padding: 50px 20px;
+  display: flex;
+  justify-content: center;
+  animation: fadeInUp 1s ease forwards;
+  opacity: 0;
+}
+
+/* Fade-in and slide up animation */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Inner card styling */
+.motivation-container {
+  
+  max-width: 420px;
+  width: 100%;
+  background-color: #e8f5e9; /* pale mint green */
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(76, 175, 80, 0.4); /* strong green shadow */
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transform: translateY(20px);
+}
+
+/* Image styling */
+.motivation-image {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.motivation-image:hover {
+  transform: scale(1.05);
+}
+
+/* Text styling */
+.motivation-text {
+  margin-top: 25px;
+  color: #2e7d32; /* rich dark green */
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.special-quote-container {
+  max-width: 460px;
+  margin: 40px auto 60px auto;
+  background-color: #e0f2e9; /* soft light green */
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(34, 139, 34, 0.15);
+  padding: 30px 25px;
+  text-align: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #2f7a2f; /* darker green text */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px; /* space between elements */
+}
+
+.special-quote-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(34, 139, 34, 0.2);
+}
+
+.special-quote-text {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+#takeTestBtn {
+  background-color: limegreen;
+  color: white;
+  font-size: 18px;
+  padding: 12px 36px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  box-shadow: 0 4px 8px rgba(50, 205, 50, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: fit-content;
+}
+
+#takeTestBtn:hover {
+  background-color: #4caf50;
+  box-shadow: 0 6px 12px rgba(50, 205, 50, 0.7);
+}
